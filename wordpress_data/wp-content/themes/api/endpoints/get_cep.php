@@ -9,19 +9,18 @@ function api_get_cep($request)
 {
 
     $fcep = $request["fcep"];
-    //    $response =  wp_remote_get('https://viacep.com.br/ws/' . $fcep . '/json');
 
     //chamada ao Laravel
     $response =  wp_remote_get(
-        'http://localhost:8000/cep/' . $fcep,
+        'http://nginx/api/getCep/' . $fcep,
         array(
             'timeout'     => 120,
             'httpversion' => '1.1',
         )
     );
 
-
-    return $response;
+    $body = wp_remote_retrieve_body($response);
+    return json_decode($body, true);
 }
 
 function register_api_get_cep()
@@ -44,8 +43,8 @@ function api_via_cep($request)
     $fcep = $request["fcep"];
     //chamada direta ao via CEP
     $response =  wp_remote_get('https://viacep.com.br/ws/' . $fcep . '/json');
-
-    return $response;
+    $body = wp_remote_retrieve_body($response);
+    return json_decode($body, true);
 }
 
 

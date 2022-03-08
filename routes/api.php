@@ -19,5 +19,3 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::get('/getCep/{cep}', ['uses' => 'Services\CepController@getCep']);
-
-Route::get('/teste/', ['uses' => 'Services\CepController@teste']);
