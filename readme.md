@@ -1,4 +1,4 @@
-# Desafio - Laravel - Wordpres - NGINX
+# Desafio - Laravel - Wordpress - NGINX
 
 Este projeto foi desenvolvido utilizando containers docker
 Com o objetivo de fazer integração com o REST Viacep no endereço: http://viacep.com.br/ws/
