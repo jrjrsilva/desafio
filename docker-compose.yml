@@ -1,0 +1,80 @@
+version: "3.7"
+services:
+  app:
+    build:
+      args:
+        user: sammy
+        uid: 1000
+      context: ./
+      dockerfile: Dockerfile
+    image: desafio
+    container_name: desafio-app
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - ./:/var/www
+    networks:
+      - desafio
+
+  db:
+    image: mysql:5.7
+    container_name: desafio-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./docker-compose/mysql:/docker-entrypoint-initdb.d
+    networks:
+      - desafio
+
+  nginx:
+    image: nginx:alpine
+    container_name: desafio-nginx
+    restart: unless-stopped
+    ports:
+      - "8000:80"
+    volumes:
+      - ./:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d
+    networks:
+      - desafio
+
+  mariadb:
+    image: docker.io/bitnami/mariadb:10.3
+    ports:
+      - "3366:3306"
+    volumes:
+      - "./mariadb_data:/bitnami/mariadb"
+    networks:
+      - desafio
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_USER=bn_wordpress
+      - MARIADB_DATABASE=bitnami_wordpress
+
+  wordpress:
+    image: docker.io/bitnami/wordpress:5
+    ports:
+      - "88:8080"
+      - "443:8443"
+    volumes:
+      - "./wordpress_data:/bitnami/wordpress"
+    networks:
+      - desafio
+    depends_on:
+      - mariadb
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - WORDPRESS_DATABASE_HOST=mariadb
+      - WORDPRESS_DATABASE_PORT_NUMBER=3306
+      - WORDPRESS_DATABASE_USER=bn_wordpress
+      - WORDPRESS_DATABASE_NAME=bitnami_wordpress
+
+networks:
+  desafio:
+    driver: bridge
