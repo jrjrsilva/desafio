@@ -15,7 +15,7 @@ function api_get_cep($request)
 
     //chamada ao Laravel
     $response =  wp_remote_get(
-        'http://localhost:5000/cep/' . $fcep,
+        'http://localhost:8000/cep/' . $fcep,
         array(
             'timeout'     => 120,
             'httpversion' => '1.1',
